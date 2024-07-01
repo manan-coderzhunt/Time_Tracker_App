@@ -65,7 +65,7 @@ class NewStopWatchController extends GetxController {
   }
 
   NewScreenTimer() {
-    timer = Timer.periodic(const Duration(seconds: 5), ScreenTimerUpdate);
+    timer = Timer.periodic(const Duration(minutes: 1), ScreenTimerUpdate);
     _captureFullScreen();
   }
 

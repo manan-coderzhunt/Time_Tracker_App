@@ -2,10 +2,13 @@ import 'package:flutter_screen_capture/flutter_screen_capture.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:time_tracker_app/controller/auth_controller.dart';
 import 'package:time_tracker_app/controller/controller.dart';
+import 'package:time_tracker_app/screens/SignIn_screen.dart';
 
 class NewStopWatch extends StatelessWidget {
   final NewStopWatchController controller = Get.put(NewStopWatchController());
+  final AuthController _authController = Get.put(AuthController());
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +18,19 @@ class NewStopWatch extends StatelessWidget {
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 90.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30.0,vertical: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    InkWell(
+                    onTap: () => _authController.SignoutUser(),
+          child: Icon(Icons.logout_outlined)),
+                  ],
+                ),
+              ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -56,13 +71,14 @@ class NewStopWatch extends StatelessWidget {
                 ],
               ),
               SizedBox(height: 40),
-              Obx(() {
-                return Text(controller.elapsedTime.value,
-                    style: TextStyle(
-                        fontSize: 55.0,
-                        color: Color(0xFF003E62),
-                        fontWeight: FontWeight.bold));
-              }),
+                  Obx(() {
+                    return Text(controller.elapsedTime.value,
+                        style: TextStyle(
+                            fontSize: 55.0,
+                            color: Color(0xFF003E62),
+                            fontWeight: FontWeight.bold));
+                  }),
+
               SizedBox(height: 40.0),
               Center(
                 child: Column(
