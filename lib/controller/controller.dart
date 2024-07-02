@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'package:flutter_screen_capture/flutter_screen_capture.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
-
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class TimeEntry {
   final String clockInTime;
@@ -26,16 +27,60 @@ class Screenshot {
 
 class NewStopWatchController extends GetxController {
   final _plugin = ScreenCapture();
+  final SupabaseClient _supabaseClient = Supabase.instance.client;
+  final box = GetStorage();
   var screenshots = <Screenshot>[].obs;
-  Stopwatch watch = Stopwatch();
+  var watch = Stopwatch();
   Timer? timer;
   Timer? breakTimer;
   var startStop = true.obs;
   var showClearButton = false.obs;
-  var startedAtTime = ''.obs;
   var elapsedTime = '00:00:00'.obs;
+  var startedAtTime = ''.obs;
   var breakTimeLeft = 30.obs;
   var timeEntries = <TimeEntry>[].obs;
+  var onBreak = false.obs;
+  var breakPressCount = 0.obs;
+  String? userEmail;
+
+  @override
+  void onInit() {
+    super.onInit();
+    loadLocalData();
+  }
+
+  void setUserEmail(String email) {
+    userEmail = email;
+    loadLocalData();
+  }
+
+  void loadLocalData() {
+    if (userEmail != null && box.hasData(userEmail!)) {
+      var storedEntries = box.read<List>(userEmail!);
+      if (storedEntries != null) {
+        timeEntries.assignAll(
+          storedEntries.map((e) => TimeEntry(
+            clockInTime: e['clockInTime'],
+            clockOutTime: e['clockOutTime'],
+            elapsedTime: e['elapsedTime'],
+          )),
+        );
+      }
+    }
+  }
+
+  void saveLocalData() {
+    if (userEmail != null) {
+      var entries = timeEntries.map((e) {
+        return {
+          'clockInTime': e.clockInTime,
+          'clockOutTime': e.clockOutTime,
+          'elapsedTime': e.elapsedTime,
+        };
+      }).toList();
+      box.write(userEmail!, entries);
+    }
+  }
 
   updateTime(Timer timer) {
     if (watch.isRunning) {
@@ -58,25 +103,25 @@ class NewStopWatchController extends GetxController {
 
   startWatch() {
     startStop.value = false;
+    if (watch.isRunning) {
+      watch.stop();
+    }
     watch.start();
-    watch.reset();
     startedAtTime.value = DateFormat("HH:mm").format(DateTime.now());
-    timer = Timer.periodic(const Duration(seconds: 1), updateTime);
+    timer = Timer.periodic(Duration(seconds: 1), updateTime);
   }
 
   NewScreenTimer() {
-    timer = Timer.periodic(const Duration(minutes: 1), ScreenTimerUpdate);
+    timer = Timer.periodic(Duration(minutes: 1), ScreenTimerUpdate);
     _captureFullScreen();
   }
 
   stopWatch() {
     startStop.value = true;
     showClearButton.value = true;
-    // watch.reset();
     watch.stop();
     timer?.cancel();
     setTime();
-
 
     if (startedAtTime.value.isNotEmpty) {
       var elapsed = transformMilliSeconds(watch.elapsedMilliseconds);
@@ -85,12 +130,17 @@ class NewStopWatchController extends GetxController {
         clockOutTime: DateFormat("HH:mm").format(DateTime.now()),
         elapsedTime: elapsed,
       ));
+      saveLocalData();
     }
 
+    watch.reset();
     startedAtTime.value = '';
-    elapsedTime.value = '00:00:00'; // Reset elapsed time
+    elapsedTime.value = '00:00:00';
+    breakTimeLeft.value = 30;
+    breakTimer?.cancel();
+    onBreak.value = false;
+    breakPressCount.value = 0;
   }
-
 
   clearScreenshots() {
     screenshots.clear();
@@ -107,7 +157,6 @@ class NewStopWatchController extends GetxController {
     int seconds = (hundreds / 100).truncate();
     int minutes = (seconds / 60).truncate();
     int hours = (minutes / 60).truncate();
-
     String hoursStr = (hours % 60).toString().padLeft(2, '0');
     String minutesStr = (minutes % 60).toString().padLeft(2, '0');
     String secondsStr = (seconds % 60).toString().padLeft(2, '0');
@@ -124,9 +173,12 @@ class NewStopWatchController extends GetxController {
   }
 
   takeABreak() {
-    if (breakTimer == null) {
+    breakPressCount.value += 1;
+
+    if (breakPressCount.value == 1) {
+      onBreak.value = true;
       watch.stop();
-      // timer?.cancel();
+      timer?.cancel();
       breakTimeLeft.value = 30;
       breakTimer = Timer.periodic(Duration(minutes: 1), (timer) {
         if (breakTimeLeft.value > 0) {
@@ -134,13 +186,39 @@ class NewStopWatchController extends GetxController {
         } else {
           breakTimer?.cancel();
           breakTimer = null;
-          watch.stop();
+          onBreak.value = false;
+          if (!startStop.value) {
+            startWatch();
+          }
         }
       });
-    } else {
+    } else if (breakPressCount.value == 2) {
       breakTimer?.cancel();
       breakTimer = null;
-      watch.start();
+      onBreak.value = false;
+      if (!startStop.value) {
+        startWatch();
+      }
+    } else if (breakPressCount.value == 3) {
+      breakPressCount.value = 0;
+      breakTimeLeft.value = 30;
+      breakTimer?.cancel();
+      onBreak.value = false;
+      if (!startStop.value) {
+        startWatch();
+      }
+      breakTimer = Timer.periodic(Duration(minutes: 1), (timer) {
+        if (breakTimeLeft.value > 0) {
+          breakTimeLeft.value -= 1;
+        } else {
+          breakTimer?.cancel();
+          breakTimer = null;
+          onBreak.value = false;
+          if (!startStop.value) {
+            startWatch();
+          }
+        }
+      });
     }
   }
 
@@ -152,15 +230,12 @@ class NewStopWatchController extends GetxController {
         int hours = int.parse(timeParts[0]);
         int minutes = int.parse(timeParts[1]);
         int seconds = int.parse(timeParts[2]);
-        totalDuration +=
-            Duration(hours: hours, minutes: minutes, seconds: seconds);
+        totalDuration += Duration(hours: hours, minutes: minutes, seconds: seconds);
       }
     }
-// Format total duration into HH:mm:ss format
     int totalHours = totalDuration.inHours;
     int totalMinutes = totalDuration.inMinutes.remainder(60);
     int totalSeconds = totalDuration.inSeconds.remainder(60);
     return '$totalHours:${totalMinutes.toString().padLeft(2, '0')}:${totalSeconds.toString().padLeft(2, '0')}';
   }
 }
-

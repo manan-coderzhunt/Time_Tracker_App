@@ -1,17 +1,21 @@
 import 'package:flutter_screen_capture/flutter_screen_capture.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:time_tracker_app/controller/auth_controller.dart';
 import 'package:time_tracker_app/controller/controller.dart';
-import 'package:time_tracker_app/screens/SignIn_screen.dart';
 
 class NewStopWatch extends StatelessWidget {
   final NewStopWatchController controller = Get.put(NewStopWatchController());
   final AuthController _authController = Get.put(AuthController());
+  final userData = GetStorage();
+
+
 
   @override
   Widget build(BuildContext context) {
+    final getPass = userData.read('email');
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -23,10 +27,25 @@ class NewStopWatch extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30.0,vertical: 10),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    Row(children: [
+                      Text("Welcome".toUpperCase(),
+            style: TextStyle(
+                fontSize: 15.0,
+                color: Color(0xFF003E62),
+                fontWeight: FontWeight.w700)),
+                      SizedBox(width: 10,),
+                      Text("${getPass.split("@").first} ".toUpperCase(),
+                          style: TextStyle(
+                              fontSize: 20.0,
+                              color: Color(0xFF003E62),
+                              fontWeight: FontWeight.bold)),
+                    ],
+                    ),
                     InkWell(
-                    onTap: () => _authController.SignoutUser(),
+                    onTap: () => _authController.signOutUser(),
           child: Icon(Icons.logout_outlined)),
                   ],
                 ),
@@ -297,22 +316,30 @@ class NewStopWatch extends StatelessWidget {
                                           crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                           children: [
-                                            Text(entry.clockOutTime ?? ' - ',
+                                            Text(
+                                              'Clock Out',
                                               style: TextStyle(
                                                 fontWeight: FontWeight.w600,
                                                 fontSize: 14,
                                                 color: Color(0xff687f8a),
                                               ),
                                             ),
-                                            Text(
-                                              "${DateFormat("HH:mm").format(
-                                                  DateTime.now())}",
+                                            Text(entry.clockOutTime ?? ' - ',
                                               style: TextStyle(
                                                   fontSize: 18,
                                                   color: Color(0xff33394e),
                                                   fontWeight:
                                                   FontWeight.bold),
                                             ),
+                                            // Text(
+                                            //   "${DateFormat("HH:mm").format(
+                                            //       DateTime.now())}",
+                                            //   style: TextStyle(
+                                            //       fontSize: 18,
+                                            //       color: Color(0xff33394e),
+                                            //       fontWeight:
+                                            //       FontWeight.bold),
+                                            // ),
                                           ],
                                         ),
                                       ),
@@ -370,7 +397,7 @@ class NewStopWatch extends StatelessWidget {
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 25,
-                                  color: Colors.white,
+                                  color: Colors.black,
                                 ),
                               ),
                             ],

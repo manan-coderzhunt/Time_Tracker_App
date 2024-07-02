@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:time_tracker_app/controller/auth_controller.dart';
 import 'package:time_tracker_app/screens/Forget_Password_Screen.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:time_tracker_app/screens/signUpScreen.dart';
 
 class SigninScreen extends StatelessWidget {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final AuthController _authController = Get.put(AuthController());
+
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +18,7 @@ class SigninScreen extends StatelessWidget {
       body: Center(
         child: Container(
           width: Get.width-940,
-          height: Get.height-220,
+          height: Get.height-170,
          decoration: BoxDecoration(
            color: Colors.white,
              borderRadius: BorderRadius.circular(8.0),
@@ -60,20 +63,55 @@ class SigninScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 10),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    InkWell(
-                      onTap: (){
-                        Get.to(() => ForgetPasswordScreen());
-                      },
-                        child: Text('Forget Password?',
-                        style: TextStyle(
-                          decoration: TextDecoration.underline,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),),
-                    splashColor: Colors.cyan,),
+                    Row(
+                      children: [
+                        InkWell(
+                          onTap: (){
+                            Get.to(() => ForgetPasswordScreen());
+                          },
+                            child: Text('Forget Password?',
+                            style: TextStyle(
+                              decoration: TextDecoration.underline,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),),
+                        splashColor: Colors.cyan,),
+                      ],
+                    ),
+                    SizedBox(height: 10),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text('Dont have An Account?',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                ),),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            InkWell(
+                              onTap: (){
+                                Get.to(() => SignUpScreen());
+                              },
+                              child: Text('Sign Up Here',
+                                style: TextStyle(
+                                  decoration: TextDecoration.underline,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                ),),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ],
-                ),
+                ), const SizedBox.shrink(),
                 SizedBox(height: 40),
                 Obx(() {
                   return _authController.isLoading.value

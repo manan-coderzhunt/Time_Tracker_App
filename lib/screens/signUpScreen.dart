@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:time_tracker_app/controller/auth_controller.dart';
+import 'package:time_tracker_app/screens/Forget_Password_Screen.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:time_tracker_app/screens/SignIn_screen.dart';
 
-class ForgetPasswordScreen extends StatelessWidget {
+class SignUpScreen extends StatelessWidget {
+  final _userNameController = TextEditingController();
   final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
   final AuthController _authController = Get.put(AuthController());
-  ForgetPasswordScreen({super.key});
+
+  SignUpScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +20,7 @@ class ForgetPasswordScreen extends StatelessWidget {
       body: Center(
         child: Container(
           width: Get.width-940,
-          height: Get.height-150,
+          height: Get.height-160,
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(8.0),
@@ -31,23 +36,22 @@ class ForgetPasswordScreen extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20.0,vertical: 20),
             child: Column(
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Center(
-                      child: InkWell(
-                        onTap: () => Get.back(result: SigninScreen()),
-                        child: Icon(Icons.navigate_before)
-                      ),
-                    ),
-                  ],
-                ),
                 SizedBox(height: 30,),
                 Image.network(
                   'http://coderzhunt.com/wp-content/uploads/2022/08/logo.png',
                   scale: 3,
                 ),
-                SizedBox(height: 80),
+                SizedBox(height: 50),
+                TextField(
+                  controller: _userNameController,
+                  decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.all(8.0),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                      ),
+                      labelText: 'UserName'),
+                ),
+                SizedBox(height: 20),
                 TextField(
                   controller: _emailController,
                   decoration: InputDecoration(
@@ -57,7 +61,43 @@ class ForgetPasswordScreen extends StatelessWidget {
                       ),
                       labelText: 'Email'),
                 ),
-                SizedBox(height: 40),
+                SizedBox(height: 20),
+                TextField(
+                  controller: _passwordController,
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.all(8.0),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    labelText: 'Password',
+                  ),
+                  obscureText: true,
+                ),
+                SizedBox(height: 10),
+                Row(
+                  children: [
+                    InkWell(
+                      onTap: (){
+                        Get.to(() => SigninScreen());
+                      },
+                      child: Row(children: [
+                        Text('Already Have An Account!',
+                          style: TextStyle(
+
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),),
+                        SizedBox(width: 5),
+                        Text('Sign In',
+                          style: TextStyle(
+                            decoration: TextDecoration.underline,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                          ),),
+                      ],)
+                    ),
+                  ],
+                ),
                 SizedBox(height: 40),
                 Obx(() {
                   return _authController.isLoading.value
@@ -73,11 +113,11 @@ class ForgetPasswordScreen extends StatelessWidget {
                         ),
                         child: Center(
                           child: InkWell(
-                            onTap: () => _authController.ForgetPassword(
-                              _emailController.text,
-                            ),
+                            onTap: () => _authController.SignUp(_emailController.text,
+                                _passwordController.text,
+                            _userNameController.text),
                             child: Text(
-                              'Send email',
+                              'SIGN UP',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   color: Colors.white,
@@ -89,14 +129,6 @@ class ForgetPasswordScreen extends StatelessWidget {
                       ),
                     ],
                   );
-                }),
-                SizedBox(height: 20),
-                Obx(() {
-                  return _authController.errorMessage.isNotEmpty
-                      ? Text(
-                    _authController.errorMessage.value,
-                    style: TextStyle(color: Colors.red),
-                  ) : SizedBox.shrink();
                 }),
               ],
             ),

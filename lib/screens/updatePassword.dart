@@ -25,7 +25,7 @@ class _ResetPasswordState extends State<ResetPassword> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Lupa Password'),
+        title: const Text('Reset Password'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -41,7 +41,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                 ),
                 validator: (value) {
                   if (value!.isEmpty || value.length < 6) {
-                    return 'Token tidak sesuai!';
+                    return 'Reset Token!';
                   }
                   return null;
                 },
@@ -53,7 +53,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                 ),
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 validator: (value) => !EmailValidator.validate(value!)
-                    ? 'Format Email Salah!'
+                    ? 'Format Email!'
                     : null,
               ),
               TextFormField(
@@ -76,7 +76,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                 ),
                 validator: (value) {
                   if (value!.isEmpty || value.length < 6) {
-                    return 'Password tidak boleh kurang dari 6 karakter!';
+                    return 'Paasword Is Less Than 6 Characters!';
                   }
                   return null;
                 },
