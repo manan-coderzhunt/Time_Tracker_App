@@ -254,124 +254,128 @@ class NewStopWatch extends StatelessWidget {
                     ),
                   ),
                 ),
-                Obx(() => ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: controller.timeEntries.length,
-                    itemBuilder: (context, index) {
-                      var entry =controller.timeEntries[index];
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 40.0, vertical: 8),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: Colors.grey.shade100,
-                            border: Border.all(
-                              color: Colors.grey.shade300,
+                Container(
+                  height: 250,
+                  color: Color(0xFFFAFAFA),
+                  child: Obx(() => ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: controller.timeEntries.length,
+                      itemBuilder: (context, index) {
+                        var entry =controller.timeEntries[index];
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 40.0, vertical: 10),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              color: Colors.grey.shade100,
+                              border: Border.all(
+                                color: Colors.grey.shade300,
+                              ),
                             ),
-                          ),
-                          width: 100,
-                          height: 80,
-                          child: ListTile(
-                            title: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 15.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 15.0, vertical: 8),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'Clock in',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 14,
-                                                color: Color(0xff687f8a),
-                                              ),
-                                            ),
-                                            Text(
-                                              entry.clockInTime,
-                                              style: TextStyle(
-                                                  fontSize: 18,
-                                                  color: Color(0xff33394e),
-                                                  fontWeight:
-                                                  FontWeight.bold),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(width: 20),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 8.0, vertical: 8),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'Clock Out',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 14,
-                                                color: Color(0xff687f8a),
-                                              ),
-                                            ),
-                                            Text(entry.clockOutTime ?? ' - ',
-                                              style: TextStyle(
-                                                  fontSize: 18,
-                                                  color: Color(0xff33394e),
-                                                  fontWeight:
-                                                  FontWeight.bold),
-                                            ),
-                                            // Text(
-                                            //   "${DateFormat("HH:mm").format(
-                                            //       DateTime.now())}",
-                                            //   style: TextStyle(
-                                            //       fontSize: 18,
-                                            //       color: Color(0xff33394e),
-                                            //       fontWeight:
-                                            //       FontWeight.bold),
-                                            // ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Center(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          bottom: 18.0),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.center,
-                                        children: [
-                                          Text(entry.elapsedTime ?? ' - ',
-                                              style: TextStyle(
-                                                  fontSize: 18.0,
+                            width: 100,
+                            height: 80,
+                            child: ListTile(
+                              title: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 15.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 15.0, vertical: 8),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'Clock in',
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 14,
                                                   color: Color(0xff687f8a),
-                                                  fontWeight:
-                                                  FontWeight.bold)),
-                                        ],
+                                                ),
+                                              ),
+                                              Text(
+                                                entry.clockInTime,
+                                                style: TextStyle(
+                                                    fontSize: 18,
+                                                    color: Color(0xff33394e),
+                                                    fontWeight:
+                                                    FontWeight.bold),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        SizedBox(width: 20),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 8.0, vertical: 8),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'Clock Out',
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 14,
+                                                  color: Color(0xff687f8a),
+                                                ),
+                                              ),
+                                              Text(entry.clockOutTime ?? ' - ',
+                                                style: TextStyle(
+                                                    fontSize: 18,
+                                                    color: Color(0xff33394e),
+                                                    fontWeight:
+                                                    FontWeight.bold),
+                                              ),
+                                              // Text(
+                                              //   "${DateFormat("HH:mm").format(
+                                              //       DateTime.now())}",
+                                              //   style: TextStyle(
+                                              //       fontSize: 18,
+                                              //       color: Color(0xff33394e),
+                                              //       fontWeight:
+                                              //       FontWeight.bold),
+                                              // ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                            bottom: 18.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                          children: [
+                                            Text(entry.elapsedTime ?? ' - ',
+                                                style: TextStyle(
+                                                    fontSize: 18.0,
+                                                    color: Color(0xff687f8a),
+                                                    fontWeight:
+                                                    FontWeight.bold)),
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      );
-                    },
-                  )
-              ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
               SizedBox(height: 350),
              Obx(() =>
                     ListView.builder(

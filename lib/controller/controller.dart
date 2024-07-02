@@ -3,7 +3,6 @@ import 'package:flutter_screen_capture/flutter_screen_capture.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class TimeEntry {
   final String clockInTime;
@@ -27,7 +26,6 @@ class Screenshot {
 
 class NewStopWatchController extends GetxController {
   final _plugin = ScreenCapture();
-  final SupabaseClient _supabaseClient = Supabase.instance.client;
   final box = GetStorage();
   var screenshots = <Screenshot>[].obs;
   var watch = Stopwatch();
@@ -88,14 +86,14 @@ class NewStopWatchController extends GetxController {
     }
   }
 
-  ScreenTimerUpdate(Timer timer) {
+  screenTimerUpdate(Timer timer) {
     _captureFullScreen();
   }
 
   startOrStop() {
     if (startStop.value) {
       startWatch();
-      NewScreenTimer();
+      newScreenTimer();
     } else {
       stopWatch();
     }
@@ -111,8 +109,8 @@ class NewStopWatchController extends GetxController {
     timer = Timer.periodic(Duration(seconds: 1), updateTime);
   }
 
-  NewScreenTimer() {
-    timer = Timer.periodic(Duration(minutes: 1), ScreenTimerUpdate);
+  newScreenTimer() {
+    timer = Timer.periodic(Duration(minutes: 1), screenTimerUpdate);
     _captureFullScreen();
   }
 
